@@ -1,0 +1,39 @@
+{
+  "name": "travelitinerary",
+  "version": "1.0.0",
+  "description": "Travel Itinerary APIs to create, manage and share travel itineraries",
+  "type": "commonjs",
+  "main": "./dist/server.js",
+  "scripts": {
+    "start": "npm run build && node dist/server.js",
+    "build": "tsc -p .",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "travelitinerary"
+  },
+  "keywords": [
+    "RESTful",
+    "express",
+    "mongodb",
+    "node"
+  ],
+  "author": "Tikam C Mahawar",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "jest": "^29.7.0",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "source-map-loader": "^5.0.0",
+    "ts-loader": "^9.5.2"
+  },
+  "exports": {
+    ".": "./dist/server.js",
+    "./package.json": "./package.json"
+  }
+}
