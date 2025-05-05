@@ -2,12 +2,20 @@
   "name": "travelitinerary",
   "version": "1.0.0",
   "description": "Travel Itinerary APIs to create, manage and share travel itineraries",
-  "type": "commonjs",
-  "main": "./dist/server.js",
+  "private": true,
   "scripts": {
-    "start": "npm run build && node dist/server.js",
-    "build": "tsc -p .",
+    "start": "node ./bin/www",
+    "start:dev": "nodemon ./bin www",
     "test": "jest"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^16.5.0",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1"
   },
   "repository": {
     "type": "git",
@@ -24,16 +32,6 @@
   "devDependencies": {
     "@types/express": "^5.0.1",
     "jest": "^29.7.0",
-    "typescript": "^5.8.3"
-  },
-  "dependencies": {
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
-    "source-map-loader": "^5.0.0",
-    "ts-loader": "^9.5.2"
-  },
-  "exports": {
-    ".": "./dist/server.js",
-    "./package.json": "./package.json"
+    "nodemon": "^3.1.10"
   }
 }
