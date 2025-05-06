@@ -32,7 +32,9 @@ const createItinerary = asyncHandler(async (req, res) => {
 @access private
 */
 const getAllItineraries = asyncHandler(async (req, res) => {
-    const itineraries = await itinerary.find({userId: req.user.id});
+    const {page = 1, limit = 10} = req.query;
+    const skip = (page - 1) * limit;
+    const itineraries = await itinerary.find({userId: req.user.id}).skip(skip).limit(limit);
     if (!itineraries) {
         res.status(404);
         throw new NotFound('No itineraries found');
