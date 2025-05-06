@@ -1,6 +1,10 @@
+require('dotenv').config();
 const asyncHandler = require('express-async-handler');
 const { NotFound, BadRequest} = require('http-errors');
+const NodeCache = require('node-cache');
+const cache = new NodeCache({ stdTTL: process.env.CACHE_TIMEOUT || 300 }); // 5 minutes default
 
+const { getCachedItineraries } = require('../utilities/getCachedItineraries')
 
 const itinerary = require('../models/itinerary.schema');
 
@@ -12,6 +16,9 @@ const itinerary = require('../models/itinerary.schema');
 const createItinerary = asyncHandler(async (req, res) => {
     const itineraryData = await itinerary.create(req.body);
     if (itineraryData) {
+        console.log('itineraryData:', itineraryData._id);
+        cache.set(itineraryData._id.toString(), itineraryData);
+        console.log('itineraryData:', itineraryData._id);
         res.status(201).json({
             message: 'Itinerary created successfully',
             itinerary: {
@@ -32,23 +39,42 @@ const createItinerary = asyncHandler(async (req, res) => {
 @access private
 */
 const getAllItineraries = asyncHandler(async (req, res) => {
-    const {page = 1, limit = 10, sort = "startDate", destination} = req.query;
-    const searchQuery = {userId: req.user.id};
+    const { page = 1, limit = 10, sort = "startDate", destination } = req.query;
+    const searchQuery = { userId: req.user.id };
+
     if (destination) {
-        searchQuery.destination = new RegExp(destination, 'i'); // case insensitive search
+        searchQuery.destination = new RegExp(destination, 'i'); // Case-insensitive search
     }
+
     const skip = (page - 1) * limit;
     const validSortFields = ['createdAt', 'startDate', 'title'];
-        if (!validSortFields.includes(sort)) {
-            res.status(400);
-            throw new BadRequest('Invalid sort field');
-        }
-    const itineraries = await itinerary.find(searchQuery).skip(skip).limit(limit).sort({[sort]: 1}); //will sort the results in ascending order
+
+    if (!validSortFields.includes(sort)) {
+        res.status(400);
+        throw new BadRequest('Invalid sort field');
+    }
+
+    // Generate cache key
+    const cacheKey = `itineraries:${req.user.id}:${page}:${limit}:${sort}:${destination || ''}`;
+    console.log('cacheKey:', cacheKey);
+    let itineraries = cache.get(cacheKey);
 
     if (!itineraries) {
-        res.status(404);
-        throw new NotFound('No itineraries found');
+        // Fetch from database if not in cache
+        itineraries = await itinerary.find(searchQuery)
+            .skip(skip)
+            .limit(limit)
+            .sort({ [sort]: 1 }); // Will sort results in ascending order
+
+        if (!itineraries.length) {
+            res.status(404);
+            throw new NotFound('No itineraries found');
+        }
+
+        // Store results in cache
+        cache.set(cacheKey, itineraries);
     }
+
     res.status(200).json(itineraries);
 });
 
@@ -59,10 +85,18 @@ const getAllItineraries = asyncHandler(async (req, res) => {
 */
 const getItinerary = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const itineraryData = await itinerary.findById(id);
+    // Check if itinerary is in cache
+    let itineraryData = cache.get(id);
     if (!itineraryData) {
-        res.status(404);
-        throw new NotFound('Itinerary not found');
+        itineraryData = await itinerary.findById(id);
+
+        if (!itineraryData) {
+            res.status(404);
+            throw new NotFound('Itinerary not found');
+        }
+
+        // Store retrieved data in cache
+        cache.set(id, itineraryData);
     }
     res.status(200).json(itineraryData);
 });
@@ -79,6 +113,11 @@ const updateItinerary = asyncHandler(async (req, res) => {
         res.status(404);
         throw new NotFound('Itinerary not found');
     }
+    // Invalidate the cache for this itinerary
+    cache.del(id);
+
+    // Store updated itinerary in cache
+    cache.set(id, itineraryData);
     res.status(204).json(itineraryData);
 });
 
@@ -94,6 +133,13 @@ const deleteItinerary = asyncHandler(async (req, res) => {
         res.status(404);
         throw new NotFound('Itinerary not found');
     }
+
+    // Invalidate the cache for this this user
+    const keys = getCachedItineraries(req.user.id, cache);
+    cache.del(keys);
+    // Remove itinerary from cache
+    cache.del(id);
+
     res.status(204).json(itineraryData);
 });
 
