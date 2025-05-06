@@ -6,6 +6,7 @@ const itinerarySchema = mongoose.Schema({
     userId: {
         type: ObjectId,
         required: true,
+        index: true,
     },
     title:{
         type: String,
@@ -14,6 +15,7 @@ const itinerarySchema = mongoose.Schema({
     destination:{
         type: String,
         required: true,
+        index: true,
     },
     startDate:{
         type: ISODate,
