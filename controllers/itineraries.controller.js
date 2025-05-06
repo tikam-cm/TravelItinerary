@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler');
-const { NotFound } = require('http-errors');
+const { NotFound, BadRequest} = require('http-errors');
 
 
 const itinerary = require('../models/itinerary.schema');
@@ -32,9 +32,19 @@ const createItinerary = asyncHandler(async (req, res) => {
 @access private
 */
 const getAllItineraries = asyncHandler(async (req, res) => {
-    const {page = 1, limit = 10} = req.query;
+    const {page = 1, limit = 10, sort = "startDate", destination} = req.query;
+    const searchQuery = {userId: req.user.id};
+    if (destination) {
+        searchQuery.destination = new RegExp(destination, 'i'); // case insensitive search
+    }
     const skip = (page - 1) * limit;
-    const itineraries = await itinerary.find({userId: req.user.id}).skip(skip).limit(limit);
+    const validSortFields = ['createdAt', 'startDate', 'title'];
+        if (!validSortFields.includes(sort)) {
+            res.status(400);
+            throw new BadRequest('Invalid sort field');
+        }
+    const itineraries = await itinerary.find(searchQuery).skip(skip).limit(limit).sort({[sort]: 1}); //will sort the results in ascending order
+
     if (!itineraries) {
         res.status(404);
         throw new NotFound('No itineraries found');
