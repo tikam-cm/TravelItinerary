@@ -6,7 +6,8 @@ const cache = new NodeCache({ stdTTL: process.env.CACHE_TIMEOUT || 300 }); // 5 
 
 const { getCachedItineraries } = require('../utilities/getCachedItineraries')
 
-const itinerary = require('../models/itinerary.schema');
+const Itinerary = require('../models/itinerary.schema');
+const { mongo } = require('mongoose');
 
 /*
 @route POST /api/itineraries
@@ -14,7 +15,17 @@ const itinerary = require('../models/itinerary.schema');
 @access private
 */
 const createItinerary = asyncHandler(async (req, res) => {
-    const itineraryData = await itinerary.create(req.body);
+    const itinerary = {
+        userId: req.user.id,
+        title: req.body.title,
+        destination: req.body.destination,
+        startDate: req.body.startDate,
+        endDate: req.body.endDate,
+        activities: req.body.activities,
+        shareableId: new mongo.ObjectId(),
+    }
+    const itineraryData = await Itinerary.create(itinerary);
+
     if (itineraryData) {
         console.log('itineraryData:', itineraryData._id);
         cache.set(itineraryData._id.toString(), itineraryData);
@@ -61,7 +72,7 @@ const getAllItineraries = asyncHandler(async (req, res) => {
 
     if (!itineraries) {
         // Fetch from database if not in cache
-        itineraries = await itinerary.find(searchQuery)
+        itineraries = await Itinerary.find(searchQuery)
             .skip(skip)
             .limit(limit)
             .sort({ [sort]: 1 }); // Will sort results in ascending order
@@ -88,7 +99,7 @@ const getItinerary = asyncHandler(async (req, res) => {
     // Check if itinerary is in cache
     let itineraryData = cache.get(id);
     if (!itineraryData) {
-        itineraryData = await itinerary.findById(id);
+        itineraryData = await Itinerary.findById(id);
 
         if (!itineraryData) {
             res.status(404);
@@ -108,7 +119,7 @@ const getItinerary = asyncHandler(async (req, res) => {
 */
 const updateItinerary = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const itineraryData = await itinerary.findByIdAndUpdate(id, req.body)
+    const itineraryData = await Itinerary.findByIdAndUpdate(id, req.body)
     if (!itineraryData) {
         res.status(404);
         throw new NotFound('Itinerary not found');
@@ -128,7 +139,7 @@ const updateItinerary = asyncHandler(async (req, res) => {
 */
 const deleteItinerary = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const itineraryData = await itinerary.findByIdAndDelete(id);
+    const itineraryData = await Itinerary.findByIdAndDelete(id);
     if (!itineraryData) {
         res.status(404);
         throw new NotFound('Itinerary not found');

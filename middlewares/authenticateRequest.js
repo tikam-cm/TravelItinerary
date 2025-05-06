@@ -13,7 +13,7 @@ const authenticateRequest = asyncHandler(async (req, res, next) => {
                 throw new Unauthorized('Not authorized, token failed');
             }
             req.user = decoded.user;
-            next();
+            next(err);
         });
     }
     else{

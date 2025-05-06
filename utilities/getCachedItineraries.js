@@ -1,4 +1,4 @@
-export const getCachedItineraries = (userId, cache) => {
+const getCachedItineraries = (userId, cache) => {
     const regex = new RegExp(`(?<=itineraries:)${userId}(?=:\\d+:\\d+:[a-zA-Z]+:)`);
 
     const allKeys = cache.keys(); // Get all cached keys
@@ -13,3 +13,5 @@ export const getCachedItineraries = (userId, cache) => {
     return matchingRecords;
     */
 };
+
+module.exports = {getCachedItineraries};

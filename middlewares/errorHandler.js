@@ -1,9 +1,10 @@
-const errorHandler = function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.json({
-        message: err.message,
-        status:err.status
+const errorHandler = (err, req, res, next) => {
+    const statusCode = err.status && Number.isInteger(err.status) ? err.status : 500;
+
+    res.status(statusCode).json({
+        message: err.message || "An unexpected error occurred",
+        status: statusCode,
     });
-}
+};
 
 module.exports = errorHandler;
