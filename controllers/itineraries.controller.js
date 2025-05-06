@@ -7,7 +7,7 @@ const itinerary = require('../models/itinerary.schema');
 /*
 @route POST /api/itineraries
 @desc get all itineraries
-@access public
+@access private
 */
 const createItinerary = asyncHandler(async (req, res) => {
     const itineraryData = await itinerary.create(req.body);
@@ -29,10 +29,10 @@ const createItinerary = asyncHandler(async (req, res) => {
 /*
 @route GET /api/itineraries/
 @desc get all itineraries
-@access public
+@access private
 */
 const getAllItineraries = asyncHandler(async (req, res) => {
-    const itineraries = await itinerary.find();
+    const itineraries = await itinerary.find({userId: req.user.id});
     if (!itineraries) {
         res.status(404);
         throw new NotFound('No itineraries found');
@@ -43,7 +43,7 @@ const getAllItineraries = asyncHandler(async (req, res) => {
 /*
 @route GET /api/itineraries/:id
 @desc get all itineraries
-@access public
+@access private
 */
 const getItinerary = asyncHandler(async (req, res) => {
     const { id } = req.params;
@@ -58,7 +58,7 @@ const getItinerary = asyncHandler(async (req, res) => {
 /*
 @route PUT /api/itineraries/:id
 @desc get all itineraries
-@access public
+@access private
 */
 const updateItinerary = asyncHandler(async (req, res) => {
     const { id } = req.params;
@@ -73,7 +73,7 @@ const updateItinerary = asyncHandler(async (req, res) => {
 /*
 @route DELETE /api/itineraries/:id
 @desc get all itineraries
-@access public
+@access private
 */
 const deleteItinerary = asyncHandler(async (req, res) => {
     const { id } = req.params;
