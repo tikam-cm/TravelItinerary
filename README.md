@@ -51,11 +51,9 @@ npm install
 ### Configure Environment Variables
 Create a `.env` file and add:
 ```
-PORT=5000
+PORT=8000
 MONGO_URI=mongodb://localhost:27017/itineraries
 JWT_SECRET=your_secret_key
-REDIS_HOST=localhost
-REDIS_PORT=6379
 ```
 
 ### Run the API
