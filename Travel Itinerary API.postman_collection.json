@@ -1,0 +1,1367 @@
+{
+	"info": {
+		"_postman_id": "844ff16f-9440-478f-b51f-938b514d628c",
+		"name": "Travel Itinerary API",
+		"description": "### **Base URL**\n\n```\nhttp://localhost:8000/api\n\n ```\n\n---\n\n## **Authentication Endpoints**\n\n### **Register User**\n\n- **Method:** POST\n    \n- **Endpoint:** `/auth/register`\n    \n- **Description:** Registers a new user and returns a JWT token.\n    \n- {\"name\": \"John Doe\",\"email\": \"[johndoe@example.com](https://mailto:johndoe@example.com)\",\"password\": \"securepassword\"}\n    \n\n### **Login User**\n\n- **Method:** POST\n    \n- **Endpoint:** `/auth/login`\n    \n- **Description:** Authenticates the user and returns a JWT token.\n    \n- {\"email\": \"[johndoe@example.com](https://mailto:johndoe@example.com)\",\"password\": \"securepassword\"}\n    \n\n---\n\n## **Itinerary Management Endpoints**\n\n### **Create an Itinerary**\n\n- **Method:** POST\n    \n- **Endpoint:** `/itineraries`\n    \n- **Description:** Creates a new itinerary.\n    \n- **Headers:**\n    \n    - `Authorization: Bearer`\n        \n- {\"destination\": \"Paris\",\"startDate\": \"2025-05-10\",\"endDate\": \"2025-05-20\",\"activities\": \\[\"Visit Eiffel Tower\", \"Explore Louvre Museum\"\\]}\n    \n\n### **Get All Itineraries**\n\n- **Method:** GET\n    \n- **Endpoint:** `/itineraries`\n    \n- **Description:** Retrieves all itineraries with optional filters.\n    \n- **Query Parameters:**\n    \n    - `page`: Page number (optional).\n        \n    - `limit`: Number of results per page (optional).\n        \n    - `sort`: Sorting field (optional).\n        \n    - `destination`: Filter by destination (optional).\n        \n- GET /itineraries?page=1&limit=10&destination=Paris\n    \n\n### **Get a Specific Itinerary**\n\n- **Method:** GET\n    \n- **Endpoint:** `/itineraries/:id`\n    \n- **Description:** Fetches an itinerary by ID.\n    \n\n### **Update an Itinerary**\n\n- **Method:** PUT\n    \n- **Endpoint:** `/itineraries/:id`\n    \n- **Description:** Updates an existing itinerary.\n    \n\n### **Delete an Itinerary**\n\n- **Method:** DELETE\n    \n- **Endpoint:** `/itineraries/:id`\n    \n- **Description:** Deletes an itinerary.\n    \n\n---\n\n## **Query Features**\n\n| Feature | Example Usage |\n| --- | --- |\n| **Pagination** | `/itineraries?page=1&limit=10` |\n| **Sorting** | `/itineraries?sort=startDate` |\n| **Filtering** | `/itineraries?destination=Paris` |\n\n---\n\n## **Performance Optimizations**\n\n- **Caching:** Itinerary details (`GET /itineraries/:id`) are cached for **5 minutes**.\n    \n- **Database Indexing:** The fields `userId` and `destination` are indexed for faster queries.\n    \n\n---\n\n## **Sharing Feature**\n\n### **Public Itinerary Link**\n\n- **Method:** GET\n    \n- **Endpoint:** `/itineraries/share/:shareableId`\n    \n- **Description:** Provides a public link to the itinerary excluding sensitive data.\n    \n\n---\n\n## **Rate Limiting**\n\nTo safeguard the API from excessive requests, rate limiting is enforced.\n\n### **Configuration**\n\n- **Window Duration:** **15 minutes**\n    \n- **Request Limit:** **100 requests per IP** within the window\n    \n- **Headers:** Uses **RateLimit** (draft-8 standard)\n    \n- **Legacy Headers:** Disabled (`X-RateLimit-\\*` headers)\n    \n\n### **Example Response When Limit is Exceeded**\n\n``` json\n{\n  \"status\": 429,\n  \"message\": \"Too many requests. Please try again later.\"\n}\n\n ```\n\n### **Postman Request Example**\n\n#### **Endpoint:** Any API route (e.g., `/api/itineraries`)\n\n- **Method:** GET / POST / PUT / DELETE\n    \n- **Headers:**\n    \n    - `Authorization: Bearer`\n        \n- **Expected Behavior:**\n    \n    - If under **100 requests**, API responds normally.\n        \n    - If over **100 requests within 15 minutes**, API returns **HTTP 429 Too Many Requests**.\n        \n\n---\n\n## **Testing & Deployment**\n\n### **Run Tests**\n\nExecute unit & integration tests:\n\n``` sh\nnpm run test\n\n ```\n\n### **Run Using Docker**\n\nStart the container using Docker Compose:\n\n``` sh\ndocker-compose up --build -d\n\n ```",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38503425"
+	},
+	"item": [
+		{
+			"name": "Auth Collection",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"tcm@abc.com\",\n    \"password\":\"my_pass\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\":\"tcm@abc.com\",\n    \"password\":\"my_pass\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8000/api/auth/login",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "273"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"111-2N3NgfTDqWhQv45cBVeLEKvOtmg\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 07:21:24 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Login successful\",\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im5hbWUiOiJUaWthbSIsImVtYWlsIjoidGNtQGFiYy5jb20iLCJpZCI6IjY4MTliODQyZGM0ZGZiODJmZDhlN2M0OCJ9LCJpYXQiOjE3NDY1MTYwODQsImV4cCI6MTc0NjUxOTY4NH0.BkXX_xCi73iJXeJ_YzaXQYnNHHh0yqodv1gEtG69sQ4\"\n}"
+						},
+						{
+							"name": "Not Authorized",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\":\"tcm@abc.com\",\n    \"password\":\"my_passa\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8000/api/auth/login",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "72"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"48-28zImO9NW0Jmi/JYn7VZCiUou8c\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 07:22:20 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Invalid credentials - password does not match\",\n    \"status\": 401\n}"
+						}
+					]
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Tikam\",\n    \"email\":\"tcm@abc.com\",\n    \"password\":\"my_pass\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\":\"Tikam\",\n    \"email\":\"tcm@abc.com\",\n    \"password\":\"my_pass\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8000/api/auth/register",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "117"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"75-J72rWa8Z3qGIlSPviQof66T9ck8\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 07:20:34 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"User created successfully\",\n    \"user\": {\n        \"name\": \"Tikam\",\n        \"email\": \"tcm@abc.com\",\n        \"id\": \"6819b842dc4dfb82fd8e7c48\"\n    }\n}"
+						},
+						{
+							"name": "Bad Request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\":\"Tikam1\",\n    \"email\":\"tcm@abc.com1\",\n    \"password\":\"my_pass\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8000/api/auth/register",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "46"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2e-xLiwBgd24kvaOS7Y5cuO16vM1NU\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 07:19:24 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"User already exists\",\n    \"status\": 400\n}"
+						}
+					]
+				}
+			],
+			"description": "#### **Overview**\n\nThe **Auth Postman Collection** is designed for testing and managing user authentication processes in an API. This collection contains two essential endpoints:\n\n#### **1\\. Register API**\n\n- **Endpoint:** `POST /api/auth/register`\n    \n- **Purpose:** Allows new users to register by providing their **name, email, and password**.\n    \n\n``` json\n{\n    \"name\":\"Tikam\",\n    \"email\":\"tcm@abc.com\",\n    \"password\":\"my_pass\"\n}\n\n ```\n\n#### **2\\. Login API**\n\n- **Endpoint:** `POST /api/auth/login`\n    \n- **Purpose:** Allows users to authenticate using their **email and password**.\n    \n\n``` json\n{\n    \"email\":\"tcm@abc.com\",\n    \"password\":\"my_pass\"\n}\n\n ```"
+		},
+		{
+			"name": "Itineraries",
+			"item": [
+				{
+					"name": "Create Itinerary",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\":\"6819b842dc4dfb82fd8e7c48\",\n    \"title\":\"Test Itinerary\",\n    \"destination\":\"Pune\",\n    \"startDate\":\"2025-05-06T22:18:47Z\",\n    \"endDate\":\"2025-05-07T22:18:47Z\",\n    \"activities\":[\n        {\n            \"time\":\"2025-05-07T06:18:47Z\",\n            \"description\":\"some random activiry\",\n            \"location\":\"bar\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/itineraries",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"itineraries"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\":\"6819b842dc4dfb82fd8e7c48\",\n    \"title\":\"Test Itinerary\",\n    \"destination\":\"Bangalore\",\n    \"startDate\":\"2025-05-06T22:18:47Z\",\n    \"endDate\":\"2025-05-07T22:18:47Z\",\n    \"activities\":[\n        {\n            \"time\":\"2025-05-07T02:18:47Z\",\n            \"description\":\"some random activiry\",\n            \"location\":\"restaurant\"\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8000/api/itineraries",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"itineraries"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "513"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"201-lAjDjaSSkCu166xQXm68n2u7Rcc\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 11:28:38 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Itinerary created successfully\",\n    \"itinerary\": {\n        \"id\": \"6819f266f4141c9930c1f65f\",\n        \"userId\": \"6819b842dc4dfb82fd8e7c48\",\n        \"title\": \"Test Itinerary\",\n        \"destination\": \"Bangalore\",\n        \"startDate\": \"2025-05-06T22:18:47.000Z\",\n        \"endDate\": \"2025-05-07T22:18:47.000Z\",\n        \"activities\": [\n            {\n                \"time\": \"2025-05-07T02:18:47Z\",\n                \"description\": \"some random activiry\",\n                \"location\": \"restaurant\",\n                \"_id\": \"6819f266f4141c9930c1f660\"\n            }\n        ],\n        \"_id\": \"6819f266f4141c9930c1f65f\",\n        \"createdAt\": \"2025-05-06T11:28:38.678Z\",\n        \"updatedAt\": \"2025-05-06T11:28:38.678Z\",\n        \"__v\": 0\n    }\n}"
+						},
+						{
+							"name": "Not Authorized",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\":\"6819b842dc4dfb82fd8e7c48\",\n    \"title\":\"Test Itinerary\",\n    \"destination\":\"Pune\",\n    \"startDate\":\"2025-05-06T22:18:47Z\",\n    \"endDate\":\"2025-05-07T22:18:47Z\",\n    \"activities\":[\n        {\n            \"time\":\"2025-05-07T06:18:47Z\",\n            \"description\":\"some random activiry\",\n            \"location\":\"bar\"\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8000/api/itineraries",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"itineraries"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "55"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"37-Cqq6HicKtPPGmAzNDBa9qV/m6i0\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 18:28:26 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Not authorized, token failed\",\n    \"status\": 401\n}"
+						}
+					]
+				},
+				{
+					"name": "Get All Itineraries",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/itineraries",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"itineraries"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "startDate",
+									"disabled": true
+								},
+								{
+									"key": "destination",
+									"value": "Bangalore",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8000/api/itineraries",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"itineraries"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "426"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1aa-royVk3wq9pX2KKR3y0gDhYiZ6WU\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 11:33:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"_id\": \"6819f266f4141c9930c1f65f\",\n        \"userId\": \"6819b842dc4dfb82fd8e7c48\",\n        \"title\": \"Test Itinerary\",\n        \"destination\": \"Bangalore\",\n        \"startDate\": \"2025-05-06T22:18:47.000Z\",\n        \"endDate\": \"2025-05-07T22:18:47.000Z\",\n        \"activities\": [\n            {\n                \"time\": \"2025-05-07T02:18:47Z\",\n                \"description\": \"some random activiry\",\n                \"location\": \"restaurant\",\n                \"_id\": \"6819f266f4141c9930c1f660\"\n            }\n        ],\n        \"createdAt\": \"2025-05-06T11:28:38.678Z\",\n        \"updatedAt\": \"2025-05-06T11:28:38.678Z\",\n        \"__v\": 0\n    }\n]"
+						},
+						{
+							"name": "Not Authorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8000/api/itineraries",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"itineraries"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "10",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "startDate",
+											"disabled": true
+										},
+										{
+											"key": "destination",
+											"value": "Bangalore",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "55"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"37-Cqq6HicKtPPGmAzNDBa9qV/m6i0\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 17:56:46 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Not authorized, token failed\",\n    \"status\": 401\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Itinerary with ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/itineraries/681a635a2d332c24278fd977",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"itineraries",
+								"681a635a2d332c24278fd977"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8000/api/itineraries",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"itineraries"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "426"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1aa-royVk3wq9pX2KKR3y0gDhYiZ6WU\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 11:33:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"_id\": \"6819f266f4141c9930c1f65f\",\n    \"userId\": \"6819b842dc4dfb82fd8e7c48\",\n    \"title\": \"Test Itinerary\",\n    \"destination\": \"Bangalore\",\n    \"startDate\": \"2025-05-06T22:18:47.000Z\",\n    \"endDate\": \"2025-05-07T22:18:47.000Z\",\n    \"activities\": [\n        {\n            \"time\": \"2025-05-07T02:18:47Z\",\n            \"description\": \"some random activiry\",\n            \"location\": \"restaurant\",\n            \"_id\": \"6819f266f4141c9930c1f660\"\n        }\n    ],\n    \"createdAt\": \"2025-05-06T11:28:38.678Z\",\n    \"updatedAt\": \"2025-05-06T11:28:38.678Z\",\n    \"__v\": 0\n}"
+						},
+						{
+							"name": "Not Authorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8000/api/itineraries/681a2fb5bcc2642e0e175a0a",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"itineraries",
+										"681a2fb5bcc2642e0e175a0a"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "55"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"37-Cqq6HicKtPPGmAzNDBa9qV/m6i0\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 18:28:56 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Not authorized, token failed\",\n    \"status\": 401\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Itinerary",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\":\"6819b842dc4dfb82fd8e7c48\",\n    \"title\":\"Test Itinerary\",\n    \"destination\":\"Delhi\",\n    \"startDate\":\"2025-05-06T22:18:47Z\",\n    \"endDate\":\"2025-05-07T22:18:47Z\",\n    \"activities\":[\n        {\n            \"time\":\"2025-05-07T02:18:47Z\",\n            \"description\":\"some random activiry\",\n            \"location\":\"restaurant\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/itineraries/6819f266f4141c9930c1f65f",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"itineraries",
+								"6819f266f4141c9930c1f65f"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\":\"6819b842dc4dfb82fd8e7c48\",\n    \"title\":\"Test Itinerary\",\n    \"destination\":\"Delhi\",\n    \"startDate\":\"2025-05-06T22:18:47Z\",\n    \"endDate\":\"2025-05-07T22:18:47Z\",\n    \"activities\":[\n        {\n            \"time\":\"2025-05-07T02:18:47Z\",\n            \"description\":\"some random activiry\",\n            \"location\":\"restaurant\"\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8000/api/itineraries/6819f266f4141c9930c1f65f",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"itineraries",
+										"6819f266f4141c9930c1f65f"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1a8-MN2rjZLsN7wk+mG0GWKvanjjlfg\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 11:36:11 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "Not Found",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\":\"6819b842dc4dfb82fd8e7c48\",\n    \"title\":\"Test Itinerary\",\n    \"destination\":\"Delhi\",\n    \"startDate\":\"2025-05-06T22:18:47Z\",\n    \"endDate\":\"2025-05-07T22:18:47Z\",\n    \"activities\":[\n        {\n            \"time\":\"2025-05-07T02:18:47Z\",\n            \"description\":\"some random activiry\",\n            \"location\":\"restaurant\"\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8000/api/itineraries/6819f266f4141c9930c1f65d",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"itineraries",
+										"6819f266f4141c9930c1f65d"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "46"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2e-GEUzVwpzSh1dKujW6gAeCnxs6kE\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 11:36:44 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Itinerary not found\",\n    \"status\": 404\n}"
+						},
+						{
+							"name": "Not Authorized",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\":\"6819b842dc4dfb82fd8e7c48\",\n    \"title\":\"Test Itinerary\",\n    \"destination\":\"Delhi\",\n    \"startDate\":\"2025-05-06T22:18:47Z\",\n    \"endDate\":\"2025-05-07T22:18:47Z\",\n    \"activities\":[\n        {\n            \"time\":\"2025-05-07T02:18:47Z\",\n            \"description\":\"some random activiry\",\n            \"location\":\"restaurant\"\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:8000/api/itineraries/6819f266f4141c9930c1f65f",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"itineraries",
+										"6819f266f4141c9930c1f65f"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "55"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"37-Cqq6HicKtPPGmAzNDBa9qV/m6i0\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 18:29:11 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Not authorized, token failed\",\n    \"status\": 401\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Itinerary",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/itineraries/681a2fb5bcc2642e0e175a0a",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"itineraries",
+								"681a2fb5bcc2642e0e175a0a"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:8000/api/itineraries/6819f266f4141c9930c1f65f",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"itineraries",
+										"6819f266f4141c9930c1f65f"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1a4-layZt+7WN0ItPVcOPc1/ej6qW0E\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 11:37:32 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "Not Found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:8000/api/itineraries/6819f266f4141c9930c1f65f",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"itineraries",
+										"6819f266f4141c9930c1f65f"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "46"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2e-GEUzVwpzSh1dKujW6gAeCnxs6kE\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 11:38:22 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Itinerary not found\",\n    \"status\": 404\n}"
+						},
+						{
+							"name": "Not Authorized",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "localhost:8000/api/itineraries/681a2fb5bcc2642e0e175a0a",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"itineraries",
+										"681a2fb5bcc2642e0e175a0a"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "55"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"37-Cqq6HicKtPPGmAzNDBa9qV/m6i0\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 18:29:28 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Not authorized, token failed\",\n    \"status\": 401\n}"
+						}
+					]
+				}
+			],
+			"description": "## **Authorization**\n\nAll endpoints require a **Bearer Token** generated from `/api/auth/login`.\n\n### **Headers Required**\n\n```\nAuthorization: Bearer <your_token>\nContent-Type: application/json\n\n ```\n\n---\n\n## **Endpoints**\n\n### **1\\. Create an Itinerary**\n\n**Endpoint:** `POST /api/itineraries`  \n**Description:** Creates a new itinerary.  \n**Headers:**\n\n- `Authorization: Bearer`\n    \n- `Content-Type: application/json`\n    \n\n**Request Body Example:**\n\n``` json\n{\n    \"userId\":\"6819b842dc4dfb82fd8e7c48\",\n    \"title\":\"Test Itinerary\",\n    \"destination\":\"Pune\",\n    \"startDate\":\"2025-05-06T22:18:47Z\",\n    \"endDate\":\"2025-05-07T22:18:47Z\",\n    \"activities\":[\n        {\n            \"time\":\"2025-05-07T06:18:47Z\",\n            \"description\":\"some random activiry\",\n            \"location\":\"bar\"\n        }\n    ]\n}\n\n ```\n\n**Response Example:**\n\n``` json\n{\n    \"message\": \"Itinerary created successfully\",\n    \"itinerary\": {\n        \"id\": \"681a635a2d332c24278fd977\",\n        \"userId\": \"6819b842dc4dfb82fd8e7c48\",\n        \"title\": \"Test Itinerary\",\n        \"destination\": \"Pune\",\n        \"startDate\": \"2025-05-06T22:18:47.000Z\",\n        \"endDate\": \"2025-05-07T22:18:47.000Z\",\n        \"activities\": [\n            {\n                \"time\": \"2025-05-07T06:18:47Z\",\n                \"description\": \"some random activiry\",\n                \"location\": \"bar\",\n                \"_id\": \"681a635a2d332c24278fd978\"\n            }\n        ],\n        \"shareableId\": \"681a635a2d332c24278fd976\",\n        \"_id\": \"681a635a2d332c24278fd977\",\n        \"createdAt\": \"2025-05-06T19:30:34.420Z\",\n        \"updatedAt\": \"2025-05-06T19:30:34.420Z\",\n        \"__v\": 0\n    }\n}\n\n ```\n\n---\n\n### **2\\. Get All Itineraries**\n\n**Endpoint:** `GET /api/itineraries`  \n**Description:** Retrieves all itineraries, with optional filtering by destination.  \n**Headers:**\n\n- `Authorization: Bearer`\n    \n\n**Query Parameters:**\n\n- `destination` _(optional)_: Filters results by destination.\n    \n\n**Response Example:**\n\n``` json\n[\n    {\n        \"_id\": \"681a635a2d332c24278fd977\",\n        \"userId\": \"6819b842dc4dfb82fd8e7c48\",\n        \"title\": \"Test Itinerary\",\n        \"destination\": \"Pune\",\n        \"startDate\": \"2025-05-06T22:18:47.000Z\",\n        \"endDate\": \"2025-05-07T22:18:47.000Z\",\n        \"activities\": [\n            {\n                \"time\": \"2025-05-07T06:18:47Z\",\n                \"description\": \"some random activiry\",\n                \"location\": \"bar\",\n                \"_id\": \"681a635a2d332c24278fd978\"\n            }\n        ],\n        \"shareableId\": \"681a635a2d332c24278fd976\",\n        \"createdAt\": \"2025-05-06T19:30:34.420Z\",\n        \"updatedAt\": \"2025-05-06T19:30:34.420Z\",\n        \"__v\": 0\n    }\n]\n\n ```\n\n---\n\n### **3\\. Get a Specific Itinerary**\n\n**Endpoint:** `GET /api/itineraries/:id`  \n**Description:** Retrieves a specific itinerary using its unique ID.  \n**Headers:**\n\n- `Authorization: Bearer`\n    \n\n**Response Example:**\n\n``` json\n{\n    \"userId\": \"6819b842dc4dfb82fd8e7c48\",\n    \"title\": \"Test Itinerary\",\n    \"destination\": \"Pune\",\n    \"startDate\": \"2025-05-06T22:18:47.000Z\",\n    \"endDate\": \"2025-05-07T22:18:47.000Z\",\n    \"activities\": [\n        {\n            \"time\": \"2025-05-07T06:18:47Z\",\n            \"description\": \"some random activiry\",\n            \"location\": \"bar\",\n            \"_id\": \"681a635a2d332c24278fd978\"\n        }\n    ],\n    \"shareableId\": \"681a635a2d332c24278fd976\",\n    \"_id\": \"681a635a2d332c24278fd977\",\n    \"createdAt\": \"2025-05-06T19:30:34.420Z\",\n    \"updatedAt\": \"2025-05-06T19:30:34.420Z\",\n    \"__v\": 0\n}\n\n ```\n\n---\n\n### **4\\. Update an Itinerary**\n\n**Endpoint:** `PUT /api/itineraries/:id`  \n**Description:** Updates an existing itinerary.  \n**Headers:**\n\n- `Authorization: Bearer`\n    \n- `Content-Type: application/json`\n    \n\n**Request Body Example:**\n\n``` json\n{\n    \"userId\":\"6819b842dc4dfb82fd8e7c48\",\n    \"title\":\"Test Itinerary\",\n    \"destination\":\"Pune\",\n    \"startDate\":\"2025-05-06T22:18:47Z\",\n    \"endDate\":\"2025-05-07T22:18:47Z\",\n    \"activities\":[\n        {\n            \"time\":\"2025-05-07T06:18:47Z\",\n            \"description\":\"some random activiry\",\n            \"location\":\"bar\"\n        }\n    ]\n}\n\n ```\n\n---\n\n### **5\\. Delete an Itinerary**\n\n**Endpoint:** `DELETE /api/itineraries/:id`  \n**Description:** Deletes an itinerary by its ID.  \n**Headers:**\n\n- `Authorization: Bearer`",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im5hbWUiOiJUaWthbSIsImVtYWlsIjoidGNtQGFiYy5jb20iLCJpZCI6IjY4MTliODQyZGM0ZGZiODJmZDhlN2M0OCJ9LCJpYXQiOjE3NDY1NTY1NjMsImV4cCI6MTc0NjU2MDE2M30.dmYsBtlTajIr21dB2a6CedU2M4vpieDSPHaOH7GZGrs",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Sharable",
+			"item": [
+				{
+					"name": "Sharable Link",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/itineraries/share/681a2fb5bcc2642e0e175a09",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"itineraries",
+								"share",
+								"681a2fb5bcc2642e0e175a09"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Successful Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8000/api/itineraries/share/681a2fb5bcc2642e0e175a09",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"itineraries",
+										"share",
+										"681a2fb5bcc2642e0e175a09"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "417"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1a1-ljg1Tqm8m5plcpRJrmcZS4p98YU\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 15:52:49 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"_id\": \"681a2fb5bcc2642e0e175a0a\",\n    \"title\": \"Test Itinerary\",\n    \"destination\": \"Pune\",\n    \"startDate\": \"2025-05-06T22:18:47.000Z\",\n    \"endDate\": \"2025-05-07T22:18:47.000Z\",\n    \"activities\": [\n        {\n            \"time\": \"2025-05-07T06:18:47Z\",\n            \"description\": \"some random activiry\",\n            \"location\": \"bar\",\n            \"_id\": \"681a2fb5bcc2642e0e175a0b\"\n        }\n    ],\n    \"shareableId\": \"681a2fb5bcc2642e0e175a09\",\n    \"createdAt\": \"2025-05-06T15:50:13.322Z\",\n    \"updatedAt\": \"2025-05-06T15:50:13.322Z\",\n    \"__v\": 0\n}"
+						},
+						{
+							"name": "Not Found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8000/api/itineraries/share/681a2fb5bcc2642e0e175a0a",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"itineraries",
+										"share",
+										"681a2fb5bcc2642e0e175a0a"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "60"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"3c-+ci4RqxqIXvIHVvKVcTf5rsD9VE\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 06 May 2025 15:54:25 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Itinerary not found or is private\",\n    \"status\": 404\n}"
+						}
+					]
+				}
+			],
+			"description": "## **Authorization**\n\nThis endpoint **does not** require authorization. It is designed for publicly accessible links.\n\n### **Headers Required**\n\n```\nContent-Type: application/json\n\n ```\n\n---\n\n## **Endpoints**\n\n### **GET a Sharable Itinerary**\n\n**Endpoint:** `GET /api/itineraries/share/:shareableId`  \n**Description:** Retrieves an itinerary via its **public shareable link**. Sensitive data (e.g., `userId`) is excluded.  \n**Headers:**\n\n- `Content-Type: application/json`\n    \n\n**Response Example:**\n\n``` json\n{\n    \"_id\": \"681a2fb5bcc2642e0e175a0a\",\n    \"title\": \"Test Itinerary\",\n    \"destination\": \"Pune\",\n    \"startDate\": \"2025-05-06T22:18:47.000Z\",\n    \"endDate\": \"2025-05-07T22:18:47.000Z\",\n    \"activities\": [\n        {\n            \"time\": \"2025-05-07T06:18:47Z\",\n            \"description\": \"some random activiry\",\n            \"location\": \"bar\",\n            \"_id\": \"681a2fb5bcc2642e0e175a0b\"\n        }\n    ],\n    \"shareableId\": \"681a2fb5bcc2642e0e175a09\",\n    \"createdAt\": \"2025-05-06T15:50:13.322Z\",\n    \"updatedAt\": \"2025-05-06T15:50:13.322Z\",\n    \"__v\": 0\n}\n\n ```\n\n---\n\n### **Notes**\n\n- This API allows users to **share itineraries** via public URLs without exposing personal data.\n    \n- Only **non-sensitive fields** are returned to ensure privacy.\n    \n- The `shareableId` is a **unique identifier** generated for public access."
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "key",
+				"value": "X-API-Key",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "localhost:8000/api"
+		}
+	]
+}

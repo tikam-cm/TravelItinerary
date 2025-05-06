@@ -107,6 +107,26 @@ docker-compose up -d
 
 ---
 
+## **Rate Limiting**
+To prevent excessive API usage, we implement rate limiting using **Express Rate Limit**.
+
+### **Configuration**
+```js
+const rateLimitConfig = {
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // Each IP is limited to 100 requests per window (15 minutes)
+  standardHeaders: 'draft-8', // Uses combined `RateLimit` header (draft-8 standard)
+  legacyHeaders: false // Disables `X-RateLimit-*` headers
+};
+```
+
+### **Behavior**
+- Each IP address can make **100 requests** within a **15-minute window**.
+- Standard headers (`RateLimit`) are used instead of legacy headers.
+- Once the limit is reached, further requests from the same IP will be **blocked** until the window resets.
+
+---
+
 ## Testing
 Run unit & integration tests:
 ```sh

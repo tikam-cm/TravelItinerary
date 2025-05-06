@@ -7,9 +7,12 @@ const logger = require('morgan');
 const authRouter = require('./routes/auth');
 const itinerariesRouter = require('./routes/itineraries');
 const sharableRouter = require('./routes/sharable');
+
 const errorHandler = require('./middlewares/errorHandler');
-const connectDb = require('./config/db.config');
 const authenticateRequest = require('./middlewares/authenticateRequest');
+
+const connectDb = require('./config/db.config');
+const limit = require('./config/rateLimit.config');
 
 connectDb();
 const app = express();
@@ -23,6 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(limit);
 
 /** Routes */
 app.use('/api/auth', authRouter);
