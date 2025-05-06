@@ -33,6 +33,14 @@ app.use('/api/auth', authRouter);
 app.use('/api/itineraries/share', sharableRouter);
 app.use('/api/itineraries', authenticateRequest,itinerariesRouter);
 
+//Default route
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'Welcome to the Travel Itinerary API',
+    status: 'success'
+  });
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(new NotFound('Resource Not Found'));
