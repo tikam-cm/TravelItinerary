@@ -1,5 +1,7 @@
 const mongoose  = require("mongoose");
 
+const Schema = mongoose.Schema, ObjectId = Schema.ObjectId, ISODate = Schema.Types.Date;
+
 const itinerarySchema = mongoose.Schema({
     userId: {
         type: ObjectId,
@@ -27,7 +29,7 @@ const itinerarySchema = mongoose.Schema({
                 type: String,
                 required: true,
             },
-            desciption:{
+            description:{
                 type: String,
                 required: true,
             },
@@ -36,12 +38,14 @@ const itinerarySchema = mongoose.Schema({
                 required: true,
             },
         }
-        ],
+    ],
     createdAt:{
         type: ISODate,
+        default: Date.now,
     },
     updatedAt:{
         type: ISODate,
+        default: Date.now,
     },
 });
 

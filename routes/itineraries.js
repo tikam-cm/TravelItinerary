@@ -1,29 +1,20 @@
 var express = require('express');
-var router = express.Router();
+const { createItinerary, getAllItineraries, getItinerary, updateItinerary, deleteItinerary } = require('../controllers/itineraries.controller');
+const router = express.Router();
 
 /* POST Create an itinerary*/
-router.post('/itineraries', function(req, res, next) {
-    res.send('Create itineraries');
-});
+router.post('/', createItinerary);
 
 /* Get all itineraries (supports filtering by destination) */
-router.get('/', function(req, res, next){
-    res.send('Get all itineraries');
-});
+router.get('/', getAllItineraries);
 
 /* Get a specific itinerary */
-router.get('/:id', function(req, res, next){
-    res.send(`Get itinerary with ${req.params.id}`);
-});
+router.get('/:id', getItinerary);
 
 /* Update an itinerary */
-router.put('/:id', function(req, res, next){
-    res.send(`Update itinerary with ${req.params.id}`);
-});
+router.put('/:id', updateItinerary);
 
 /* Delete an itinerary */
-router.delete('/:id', function(req, res, next){
-    res.send(`Delete itinerary with ${req.params.id}`);
-});
+router.delete('/:id', deleteItinerary);
 
 module.exports = router;
