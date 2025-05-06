@@ -6,6 +6,7 @@ const logger = require('morgan');
 
 const authRouter = require('./routes/auth');
 const itinerariesRouter = require('./routes/itineraries');
+const sharableRouter = require('./routes/sharable');
 const errorHandler = require('./middlewares/errorHandler');
 const connectDb = require('./config/db.config');
 const authenticateRequest = require('./middlewares/authenticateRequest');
@@ -24,6 +25,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/auth', authRouter);
+app.use('/api/itineraries/share', sharableRouter);
 app.use('/api/itineraries', authenticateRequest,itinerariesRouter);
 
 // catch 404 and forward to error handler

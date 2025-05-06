@@ -49,6 +49,10 @@ const itinerarySchema = mongoose.Schema({
         type: ISODate,
         default: Date.now,
     },
+    shareableId: {
+        type: ObjectId, 
+        unique: true 
+    }
 });
 
 module.exports = mongoose.model('Itinerary', itinerarySchema);
