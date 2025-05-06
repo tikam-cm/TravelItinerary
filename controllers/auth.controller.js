@@ -1,4 +1,11 @@
 const asyncHandler = require('express-async-handler')
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+const {Unauthorized, BadRequest} = require('http-errors');
+
+require('dotenv').config();
+
 const User = require('../models/user.schema');
 
 /*
@@ -10,14 +17,42 @@ const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
         res.status(400);
-        throw new Error('Please add all fields');
+        throw new BadRequest('Please add all fields');
     }
+
+    // Check if user exists
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+        res.status(400);
+        throw new BadRequest('User already exists');
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // console.log('hashed password:', hashedPassword); do not reveal
+
+    // Create user
     const user = await User.create({
         name,
         email,
-        password
+        password: hashedPassword
     });
-    res.status(201).json(user);
+    if(user) {
+        res.status(201).json({
+            message: 'User created successfully',
+            user: {
+                name: user.name,
+                email: user.email,
+                id: user._id
+            }
+        });
+    }
+    else {
+        res.status(400);
+        throw new BadRequest('Invalid user data');
+    }
 });
 
 /*
@@ -26,7 +61,39 @@ const registerUser = asyncHandler(async (req, res) => {
 @access public
 */
 const loginUser = asyncHandler(async (req, res, ) =>{
-    res.send('Login user')
+    const { email, password } = req.body;
+    if (!email || !password) {
+        res.status(400);
+        throw new BadRequest('Please add all fields');
+    }
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+        res.status(400);
+        throw new BadRequest('User not found');
+    }
+    // Check if password is correct
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+        res.status(401);
+        throw new Unauthorized('Invalid credentials - password does not match');
+    }
+    // Generate token
+    const token = jwt.sign({
+        user:{
+            name: user.name,
+            email: user.email,
+            id: user._id
+        }
+    },
+    process.env.JWT_SECRET,
+    {
+        expiresIn: process.env.JWT_EXPIRATION
+    });
+    res.status(200).json({
+        message:'Login successful',
+        token:token
+    });
 })
 
 module.exports = {
