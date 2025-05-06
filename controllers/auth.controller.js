@@ -1,10 +1,12 @@
+require('dotenv').config();
+
 const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const NodeCache = require('node-cache');
+const cache = new NodeCache({ stdTTL: process.env.CACHE_TIMEOUT || 300 }); // 5 minutes default
 
 const {Unauthorized, BadRequest} = require('http-errors');
-
-require('dotenv').config();
 
 const User = require('../models/user.schema');
 
@@ -20,7 +22,12 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new BadRequest('Please add all fields');
     }
 
-    // Check if user exists
+    // Check if user exists - in cache
+    if (cache.get(email)) {
+        res.status(400);
+        throw new BadRequest('User already exists');
+    }
+
     const userExists = await User.findOne({ email });
     if (userExists) {
         res.status(400);
@@ -66,11 +73,16 @@ const loginUser = asyncHandler(async (req, res, ) =>{
         res.status(400);
         throw new BadRequest('Please add all fields');
     }
-    // Check if user exists
-    const user = await User.findOne({ email });
-    if (!user) {
-        res.status(400);
-        throw new BadRequest('User not found');
+    // Check if user exists - in cache
+    let user = cache.get(email);
+    if(!user)
+    {
+        user = await User.findOne({ email });
+        if (!user) {
+            res.status(400);
+            throw new BadRequest('User not found');
+        }
+        cache.set(email, user); // cache the user for 5 minutes
     }
     // Check if password is correct
     const isMatch = await bcrypt.compare(password, user.password);
