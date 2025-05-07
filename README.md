@@ -118,6 +118,23 @@ const rateLimitConfig = {
 };
 ```
 
+## **Node Mailer**
+Nodemailer makes sending email from a Node.js application straightforward and secure, without pulling in a single runtime dependency.
+
+### **Configuration**
+```js
+const mailerConfig = {
+  host: process.env.MAILER_HOST,
+  port: process.env.MAILER_PORT,
+  secure: false,
+  auth: {
+    user: process.env.MAILER_USER,
+    pass: process.env.MAILER_PASS,
+  }
+};
+```
+
+
 ### **Behavior**
 - Each IP address can make **100 requests** within a **15-minute window**.
 - Standard headers (`RateLimit`) are used instead of legacy headers.
