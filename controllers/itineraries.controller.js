@@ -8,6 +8,7 @@ const { getCachedItineraries } = require('../utilities/getCachedItineraries')
 
 const Itinerary = require('../models/itinerary.schema');
 const { mongo } = require('mongoose');
+const { sendMailNotification } = require('../utilities/mailerUtility');
 
 /*
 @route POST /api/itineraries
@@ -30,6 +31,7 @@ const createItinerary = asyncHandler(async (req, res) => {
         console.log('itineraryData:', itineraryData._id);
         cache.set(itineraryData._id.toString(), itineraryData);
         console.log('itineraryData:', itineraryData._id);
+        sendMailNotification(req.user.email, itineraryData);
         res.status(201).json({
             message: 'Itinerary created successfully',
             itinerary: {
