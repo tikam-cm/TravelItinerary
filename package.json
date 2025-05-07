@@ -4,8 +4,8 @@
   "description": "Travel Itinerary APIs to create, manage and share travel itineraries",
   "private": true,
   "scripts": {
-    "start": "node server.js",
-    "start:dev": "nodemon server.js",
+    "start": "node bin/www",
+    "start:dev": "nodemon ../bin/www",
     "test": "jest"
   },
   "dependencies": {

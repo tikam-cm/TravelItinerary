@@ -34,13 +34,7 @@ app.use('/api/itineraries/share', sharableRouter);
 app.use('/api/itineraries', authenticateRequest,itinerariesRouter);
 
 //Default route
-// app.get('/', (req, res) => {
-//   res.status(200).json({
-//     message: 'Welcome to the Travel Itinerary API',
-//     status: 'success'
-//   });
-// });
-app.use('/', express.Router().get((req, res) => {
+app.use('/', express.Router().get('',(req, res) => {
   res.status(200).json({
     message: 'Welcome to the Travel Itinerary API',
     status: 'success'
